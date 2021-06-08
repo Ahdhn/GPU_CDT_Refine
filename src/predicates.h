@@ -1,6 +1,6 @@
 //*****************************************************************************
 // Extracted and adapted by Cao Thanh Tung
-// School of Computing, National University of Singapore. 
+// School of Computing, National University of Singapore.
 // Date: 26/01/2009
 //
 // Note: Some variable and method names are changed to avoid conflicts
@@ -40,7 +40,7 @@
 #ifndef PREDICATES_H
 #define PREDICATES_H
 
-#pragma warning (disable:4244)
+#pragma warning(disable : 4244)
 
 #define INEXACT
 
@@ -63,7 +63,7 @@
 //*   forcing the value to be stored to memory (rather than be kept in the    *
 //*   register to which the optimizer assigned it).                           *
 
-#define Absolute(a)  ((a) >= 0.0 ? (a) : -(a))
+#define Absolute(a) ((a) >= 0.0 ? (a) : -(a))
 // #define Absolute(a)  fabs(a)
 
 //* Many of the operations are broken up into two pieces, a main part that    *
@@ -80,102 +80,102 @@
 //*   also be declared `INEXACT'.                                             *
 
 #define Fast_Two_Sum_Tail(a, b, x, y) \
-    bvirt = x - a; \
+    bvirt = x - a;                    \
     y = b - bvirt
 
 #define Fast_Two_Sum(a, b, x, y) \
-    x = (REAL) (a + b); \
+    x = (REAL)(a + b);           \
     Fast_Two_Sum_Tail(a, b, x, y)
 
 #define Two_Sum_Tail(a, b, x, y) \
-    bvirt = (REAL) (x - a); \
-    avirt = x - bvirt; \
-    bround = b - bvirt; \
-    around = a - avirt; \
+    bvirt = (REAL)(x - a);       \
+    avirt = x - bvirt;           \
+    bround = b - bvirt;          \
+    around = a - avirt;          \
     y = around + bround
 
 #define Two_Sum(a, b, x, y) \
-    x = (REAL) (a + b); \
+    x = (REAL)(a + b);      \
     Two_Sum_Tail(a, b, x, y)
 
 #define Two_Diff_Tail(a, b, x, y) \
-    bvirt = (REAL) (a - x); \
-    avirt = x + bvirt; \
-    bround = bvirt - b; \
-    around = a - avirt; \
+    bvirt = (REAL)(a - x);        \
+    avirt = x + bvirt;            \
+    bround = bvirt - b;           \
+    around = a - avirt;           \
     y = around + bround
 
 #define Two_Diff(a, b, x, y) \
-    x = (REAL) (a - b); \
+    x = (REAL)(a - b);       \
     Two_Diff_Tail(a, b, x, y)
 
-#define Split(a, ahi, alo) \
-    c = (REAL) (gpudt_splitter * a); \
-    abig = (REAL) (c - a); \
-    ahi = c - abig; \
+#define Split(a, ahi, alo)          \
+    c = (REAL)(gpudt_splitter * a); \
+    abig = (REAL)(c - a);           \
+    ahi = c - abig;                 \
     alo = a - ahi
 
 #define Two_Product_Tail(a, b, x, y) \
-    Split(a, ahi, alo); \
-    Split(b, bhi, blo); \
-    err1 = x - (ahi * bhi); \
-    err2 = err1 - (alo * bhi); \
-    err3 = err2 - (ahi * blo); \
+    Split(a, ahi, alo);              \
+    Split(b, bhi, blo);              \
+    err1 = x - (ahi * bhi);          \
+    err2 = err1 - (alo * bhi);       \
+    err3 = err2 - (ahi * blo);       \
     y = (alo * blo) - err3
 
 #define Two_Product(a, b, x, y) \
-    x = (REAL) (a * b); \
+    x = (REAL)(a * b);          \
     Two_Product_Tail(a, b, x, y)
 
-// Two_Product_Presplit() is Two_Product() where one of the inputs has       
-//   already been split.  Avoids redundant splitting.                        
+// Two_Product_Presplit() is Two_Product() where one of the inputs has
+//   already been split.  Avoids redundant splitting.
 
 #define Two_Product_Presplit(a, b, bhi, blo, x, y) \
-    x = (REAL) (a * b); \
-    Split(a, ahi, alo); \
-    err1 = x - (ahi * bhi); \
-    err2 = err1 - (alo * bhi); \
-    err3 = err2 - (ahi * blo); \
+    x = (REAL)(a * b);                             \
+    Split(a, ahi, alo);                            \
+    err1 = x - (ahi * bhi);                        \
+    err2 = err1 - (alo * bhi);                     \
+    err3 = err2 - (ahi * blo);                     \
     y = (alo * blo) - err3
 
-// Square() can be done more quickly than Two_Product().                     
+// Square() can be done more quickly than Two_Product().
 
-#define Square_Tail(a, x, y) \
-    Split(a, ahi, alo); \
-    err1 = x - (ahi * ahi); \
+#define Square_Tail(a, x, y)           \
+    Split(a, ahi, alo);                \
+    err1 = x - (ahi * ahi);            \
     err3 = err1 - ((ahi + ahi) * alo); \
     y = (alo * alo) - err3
 
 #define Square(a, x, y) \
-    x = (REAL) (a * a); \
+    x = (REAL)(a * a);  \
     Square_Tail(a, x, y)
 
-// Macros for summing expansions of various fixed lengths.  These are all    
-//   unrolled versions of Expansion_Sum().                                   
+// Macros for summing expansions of various fixed lengths.  These are all
+//   unrolled versions of Expansion_Sum().
 
 #define Two_One_Sum(a1, a0, b, x2, x1, x0) \
-    Two_Sum(a0, b , _i, x0); \
+    Two_Sum(a0, b, _i, x0);                \
     Two_Sum(a1, _i, x2, x1)
 
 #define Two_One_Diff(a1, a0, b, x2, x1, x0) \
-    Two_Diff(a0, b , _i, x0); \
-    Two_Sum( a1, _i, x2, x1)
+    Two_Diff(a0, b, _i, x0);                \
+    Two_Sum(a1, _i, x2, x1)
 
 #define Two_Two_Sum(a1, a0, b1, b0, x3, x2, x1, x0) \
-    Two_One_Sum(a1, a0, b0, _j, _0, x0); \
+    Two_One_Sum(a1, a0, b0, _j, _0, x0);            \
     Two_One_Sum(_j, _0, b1, x3, x2, x1)
 
 #define Two_Two_Diff(a1, a0, b1, b0, x3, x2, x1, x0) \
-    Two_One_Diff(a1, a0, b0, _j, _0, x0); \
+    Two_One_Diff(a1, a0, b0, _j, _0, x0);            \
     Two_One_Diff(_j, _0, b1, x3, x2, x1)
 
-// Macro for multiplying a two-component expansion by a single component.    
+// Macro for multiplying a two-component expansion by a single component.
 
 #define Two_One_Product(a1, a0, b, x3, x2, x1, x0) \
-    Split(b, bhi, blo); \
+    Split(b, bhi, blo);                            \
     Two_Product_Presplit(a0, b, bhi, blo, _i, x0); \
     Two_Product_Presplit(a1, b, bhi, blo, _j, _0); \
-    Two_Sum(_i, _0, _k, x1); \
+    Two_Sum(_i, _0, _k, x1);                       \
     Fast_Two_Sum(_j, _k, x3, x2)
 
 //*****************************************************************************
@@ -183,10 +183,10 @@
 //*****************************************************************************
 void gpudt_exactinit();
 
-REAL counterclockwise(triVertex *pa, triVertex *pb, triVertex *pc);
+REAL counterclockwise(triVertex* pa, triVertex* pb, triVertex* pc);
 
-REAL incircle(triVertex *pa, triVertex *pb, triVertex *pc, triVertex *pd);
+REAL incircle(triVertex* pa, triVertex* pb, triVertex* pc, triVertex* pd);
 
-REAL incircleexact(triVertex * pa, triVertex *pb, triVertex * pc, triVertex * pd);
+REAL incircleexact(triVertex* pa, triVertex* pb, triVertex* pc, triVertex* pd);
 
 #endif

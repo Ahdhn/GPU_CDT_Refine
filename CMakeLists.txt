@@ -28,6 +28,10 @@ target_include_directories(${PROJECT_NAME}
 	PRIVATE "${CMAKE_SOURCE_DIR}/freeglut"
 )
 
+target_compile_definitions(${PROJECT_NAME} 
+    PUBLIC INPUT_DIR=${CMAKE_CURRENT_SOURCE_DIR}/
+)
+
 #GLOB source files 
 file(GLOB_RECURSE SrcFiles ${CMAKE_SOURCE_DIR}/src/*.* ${CMAKE_SOURCE_DIR}/freeglut/*.h)
 
@@ -66,6 +70,7 @@ target_compile_options(developer_flags INTERFACE
 target_link_libraries( ${PROJECT_NAME}   
 	PRIVATE $<BUILD_INTERFACE:developer_flags>	
 )
+
 
 #OpenMP
 find_package(OpenMP)
